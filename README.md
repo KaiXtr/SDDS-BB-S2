@@ -1,4 +1,18 @@
-# ILOVEYOU
+# SDDS-BB-S2
+
+Baseado no worm de Windows 2000 ILOVEYOU, criado por Onel de Guzman e programado inteiramente em Visual Basic Script. Minha modificação consiste em um worm que, além de criar e exibir uma página web, duplica os arquivos do sistema, preservando seu conteúdo. Em todas as situações, o worm exibe mensagem de amor. Embora inofensivo, o worm é potencialmente prejudicial e com a possibilidade de estourar o armazenamento do dispositivo de forma não intencionada a cada nova inicialização do sistema.
+
+![Captura de tela de 2024-07-16 23-23-20](https://github.com/user-attachments/assets/7c6f5c33-1e65-45c5-a323-8b7152f34b3d)
+
+### Sobre o ILOVEYOU
+
+O worm original, conhecido popularmente como ILOVEYOU ou Love Bug, foi criado por Onel de Guzman e detectado pela primeira vez no ano de 2000 nos sistemas Windows 2000, que sofriam de diversas vulnerabilidades que permitiam a execução de scripts VBS diretamente de um cliente de email e que escondiam a extensão destes arquivos do usuário final.
+
+Criado como trabalho de conclusão de curso da faculdade de computação de Guzman, que posteriormente a largou após a rejeição do seu TCC, o worm não é de todo muito competente, possuindo algumas falhas e sendo feito em uma linguagem de programação não muito comum para ataques de baixo nível. Contudo, é inegável o grande impacto que as linhas de código que se seguem causaram ao redor do mundo, pois nem mesmo Guzman imaginou que seu worm causaria tanto estrago para fora das redondezas das filipinas.
+
+---
+
+## ILOVEYOU
 
 > **ILOVEYOU**, sometimes referred to as **Love Bug** or **Love Letter**, was a
 > [computer worm](https://en.wikipedia.org/wiki/Computer_worm) that attacked

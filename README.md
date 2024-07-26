@@ -1,6 +1,7 @@
 # SDDS-BB-S2
 
 Baseado no worm de Windows 2000 ILOVEYOU, criado por Onel de Guzman e programado inteiramente em Visual Basic Script. Minha modificação consiste em um worm que, além de criar e exibir uma página web, duplica os arquivos do sistema, preservando seu conteúdo. Em todas as situações, o worm exibe mensagem de amor. Embora inofensivo, o worm é potencialmente prejudicial e com a possibilidade de estourar o armazenamento do dispositivo de forma não intencionada a cada nova inicialização do sistema.
+![sdds-bb-s2](https://github.com/user-attachments/assets/f2c4a535-6821-47a1-bfc8-6d7a13290787)
 
 ![Captura de tela de 2024-07-16 23-23-20](https://github.com/user-attachments/assets/7c6f5c33-1e65-45c5-a323-8b7152f34b3d)
 

